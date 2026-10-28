@@ -166,6 +166,65 @@ describe("CARNAGE OPTIX API Suite", () => {
     assert.ok(listRes.body.length > 0);
   });
 
+  test("POST /api/auth/signup registers new patron with hashed password and returns JWT", async () => {
+    const signupData = {
+      name: "Raven Bloodthorn",
+      email: "raven@carnage.realm",
+      password: "secretpassword123",
+      bloodType: "AB-Negative",
+    };
+
+    const res = await request(app).post("/api/auth/signup").send(signupData);
+    assert.equal(res.status, 201);
+    assert.equal(res.body.success, true);
+    assert.ok(res.body.token);
+    assert.equal(res.body.user.name, "Raven Bloodthorn");
+    assert.equal(res.body.user.email, "raven@carnage.realm");
+    assert.equal(res.body.user.bloodType, "AB-Negative");
+  });
+
+  test("POST /api/auth/signup rejects duplicate email", async () => {
+    const duplicateData = {
+      name: "Raven Imposter",
+      email: "raven@carnage.realm",
+      password: "differentpassword",
+    };
+
+    const res = await request(app).post("/api/auth/signup").send(duplicateData);
+    assert.equal(res.status, 409);
+    assert.match(res.body.error, /already registered/i);
+  });
+
+  test("POST /api/auth/signin validates credentials and returns JWT", async () => {
+    const res = await request(app).post("/api/auth/signin").send({
+      email: "raven@carnage.realm",
+      password: "secretpassword123",
+    });
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.ok(res.body.token);
+    assert.equal(res.body.user.email, "raven@carnage.realm");
+
+    // Test GET /api/auth/me with valid Bearer token
+    const meRes = await request(app)
+      .get("/api/auth/me")
+      .set("Authorization", `Bearer ${res.body.token}`);
+    assert.equal(meRes.status, 200);
+    assert.equal(meRes.body.user.name, "Raven Bloodthorn");
+    assert.equal(meRes.body.user.password, undefined); // Password must not be leaked
+  });
+
+  test("POST /api/auth/signin rejects incorrect password", async () => {
+    const res = await request(app).post("/api/auth/signin").send({
+      email: "raven@carnage.realm",
+      password: "wrongpassword",
+    });
+
+    assert.equal(res.status, 401);
+    assert.match(res.body.error, /Invalid password cipher/i);
+  });
+
   test("GET /api/stats reports accurate totals", async () => {
     const res = await request(app).get("/api/stats");
     assert.equal(res.status, 200);

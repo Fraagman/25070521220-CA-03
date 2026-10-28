@@ -1,8 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Skull, ShoppingBag, ShieldAlert } from 'lucide-react';
+import { Skull, ShoppingBag, ShieldAlert, User, LogOut } from 'lucide-react';
 import './App.css';
 
-const Nav = ({ cartCount = 0, onOpenCart, isConnected = true }) => {
+const Nav = ({
+  cartCount = 0,
+  onOpenCart,
+  isConnected = true,
+  currentUser = null,
+  onOpenAuth,
+  onLogout,
+}) => {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -91,8 +98,36 @@ const Nav = ({ cartCount = 0, onOpenCart, isConnected = true }) => {
           </li>
         </ul>
 
-        {/* Gore Bag Action */}
+        {/* Right Actions: Auth + Cart */}
         <div className="flex items-center space-x-3">
+          {currentUser ? (
+            <div className="flex items-center space-x-2 bg-black border-2 border-red-900/80 px-2 py-1 font-mono text-xs">
+              <span className="bg-[#ff0033] text-black text-[10px] font-black px-1.5 py-0.5 uppercase">
+                {currentUser.bloodType || 'O-NEG'}
+              </span>
+              <span className="text-white font-bold max-w-[120px] truncate hidden sm:inline">
+                {currentUser.name}
+              </span>
+              <button
+                onClick={onLogout}
+                data-testid="logout-button"
+                className="text-zinc-400 hover:text-[#ff0033] p-1 transition-colors"
+                title="Log Out from Abyss"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => onOpenAuth('signin')}
+              data-testid="open-auth-button"
+              className="flex items-center space-x-1.5 bg-black border-2 border-red-800 hover:border-[#ff0033] text-zinc-300 hover:text-white px-3 py-1.5 font-mono text-xs font-bold uppercase transition-all shadow-[2px_2px_0px_#800010]"
+            >
+              <User className="w-3.5 h-3.5 text-[#ff0033]" />
+              <span className="hidden sm:inline">SIGN IN / REGISTER</span>
+            </button>
+          )}
+
           <button
             onClick={onOpenCart}
             data-testid="cart-button"
@@ -114,4 +149,3 @@ const Nav = ({ cartCount = 0, onOpenCart, isConnected = true }) => {
 };
 
 export default Nav;
-

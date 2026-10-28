@@ -10,6 +10,10 @@ import type {
   FilterOptions,
   StoreStats,
   HealthStatus,
+  User,
+  AuthResponse,
+  SignUpPayload,
+  SignInPayload,
 } from '../types';
 
 const API_BASE = '/api';
@@ -173,5 +177,79 @@ export async function reseedDatabase(): Promise<{ message: string; count: number
     method: 'POST',
   });
   return handleResponse<{ message: string; count: number }>(response);
+}
+
+/**
+ * Register a new patron into MongoDB
+ */
+export async function signup(payload: SignUpPayload): Promise<AuthResponse> {
+  const response = await fetch(`${API_BASE}/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse<AuthResponse>(response);
+}
+
+/**
+ * Authenticate existing patron against MongoDB
+ */
+export async function signin(payload: SignInPayload): Promise<AuthResponse> {
+  const response = await fetch(`${API_BASE}/auth/signin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse<AuthResponse>(response);
+}
+
+/**
+ * Fetch current user profile from MongoDB
+ */
+export async function getMe(token: string): Promise<{ user: User }> {
+  const response = await fetch(`${API_BASE}/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse<{ user: User }>(response);
+}
+
+/**
+ * LocalStorage Authentication Helpers
+ */
+export function getSavedToken(): string | null {
+  try {
+    return localStorage.getItem('carnage_auth_token');
+  } catch {
+    return null;
+  }
+}
+
+export function getSavedUser(): User | null {
+  try {
+    const raw = localStorage.getItem('carnage_auth_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveAuth(token: string, user: User): void {
+  try {
+    localStorage.setItem('carnage_auth_token', token);
+    localStorage.setItem('carnage_auth_user', JSON.stringify(user));
+  } catch {
+    // ignore
+  }
+}
+
+export function clearAuth(): void {
+  try {
+    localStorage.removeItem('carnage_auth_token');
+    localStorage.removeItem('carnage_auth_user');
+  } catch {
+    // ignore
+  }
 }
 

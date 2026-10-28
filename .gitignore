@@ -25,4 +25,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-.DS_Store
+# Legacy sample directory
+samplesite witbackend/
+samplesite*
+

@@ -41,6 +41,7 @@ const MainContentCont = ({
   setAppliedPromo,
   selectedProduct,
   setSelectedProduct,
+  currentUser,
 }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -337,6 +338,7 @@ const MainContentCont = ({
         cart={cart}
         onOrderSuccess={handleOrderSuccess}
         appliedPromo={appliedPromo}
+        currentUser={currentUser}
       />
     </section>
   );

@@ -4,6 +4,7 @@ const { getDB, isConnected, seedDefaultData } = require("./db/connection");
 const sunglassesRouter = require("./routes/sunglasses");
 const ordersRouter = require("./routes/orders");
 const inquiriesRouter = require("./routes/inquiries");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.post("/api/seed", async (req, res, next) => {
 });
 
 // Register routers
+app.use("/api/auth", authRouter);
 app.use("/api/sunglasses", sunglassesRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/inquiries", inquiriesRouter);

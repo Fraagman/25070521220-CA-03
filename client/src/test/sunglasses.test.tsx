@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ProductCard } from '../components/ProductCard';
 import { SunglassesSVG } from '../components/SunglassesSVG';
 import { CartDrawer } from '../components/CartDrawer';
+import { AuthModal } from '../components/AuthModal';
 import type { Sunglasses, CartItem } from '../types';
 
 const mockProduct: Sunglasses = {
@@ -124,6 +125,35 @@ describe('CARNAGE OPTIX Frontend Test Suite', () => {
     expect(screen.getByText('FREE OVER $150')).toBeInTheDocument();
     // 189.99 - 10% (19.00) = $170.99
     expect(screen.getByText('$170.99')).toBeInTheDocument();
+  });
+
+  it('renders AuthModal in Sign In mode and toggles to Sign Up mode', () => {
+    const onClose = vi.fn();
+    const onAuthSuccess = vi.fn();
+
+    render(
+      <AuthModal
+        isOpen={true}
+        onClose={onClose}
+        onAuthSuccess={onAuthSuccess}
+        initialMode="signin"
+      />
+    );
+
+    expect(screen.getByText('ABYSS ENTRANCE')).toBeInTheDocument();
+    expect(screen.getByTestId('input-email')).toBeInTheDocument();
+    expect(screen.getByTestId('input-password')).toBeInTheDocument();
+    expect(screen.queryByTestId('input-name')).not.toBeInTheDocument();
+
+    // Toggle to Sign Up
+    fireEvent.click(screen.getByTestId('tab-signup'));
+    expect(screen.getByText('PATRON INITIATION')).toBeInTheDocument();
+    expect(screen.getByTestId('input-name')).toBeInTheDocument();
+    expect(screen.getByTestId('select-blood-type')).toBeInTheDocument();
+
+    // Close button
+    fireEvent.click(screen.getByTestId('close-auth-modal'));
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
 

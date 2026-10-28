@@ -156,6 +156,15 @@ Database Name: `carnage_optix`
    - `status`: string
    - `createdAt`: Date
 
+4. **`users`**:
+   - `_id`: ObjectId
+   - `name`: string (e.g. "Raven Bloodthorn")
+   - `email`: string
+   - `password`: string (hashed via bcrypt)
+   - `bloodType`: string (e.g. "O-Negative", "AB-Positive")
+   - `role`: string ("patron")
+   - `createdAt`: Date
+
 ---
 
 ## 📡 REST API Contracts
@@ -163,6 +172,9 @@ Database Name: `carnage_optix`
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/health` | Service and MongoDB connection status |
+| `POST` | `/api/auth/signup` | Register new patron, hashes password, returns JWT |
+| `POST` | `/api/auth/signin` | Authenticate patron credentials, returns JWT |
+| `GET` | `/api/auth/me` | Fetch authenticated user profile using Bearer JWT |
 | `GET` | `/api/sunglasses` | Query sunglasses with filters (`search`, `category`, `splatterLevel`, `sortBy`) |
 | `GET` | `/api/sunglasses/:id` | Get single sunglasses details by ID or slug |
 | `POST` | `/api/sunglasses` | Create a new sunglasses item in MongoDB |

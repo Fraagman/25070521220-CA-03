@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, CheckCircle, ShieldAlert, Skull, ArrowRight, Printer, Copy } from 'lucide-react';
-import type { CartItem, OrderConfirmation, Order } from '../types';
+import type { CartItem, OrderConfirmation, Order, User } from '../types';
 import { createOrder } from '../services/api';
 
 interface CheckoutModalProps {
@@ -9,6 +9,7 @@ interface CheckoutModalProps {
   cart: CartItem[];
   onOrderSuccess: (order: Order) => void;
   appliedPromo: string;
+  currentUser?: User | null;
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -17,15 +18,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cart,
   onOrderSuccess,
   appliedPromo,
+  currentUser = null,
 }) => {
-  const [customerName, setCustomerName] = useState('');
-  const [email, setEmail] = useState('');
+  const [customerName, setCustomerName] = useState(currentUser?.name || '');
+  const [email, setEmail] = useState(currentUser?.email || '');
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [country, setCountry] = useState('USA');
-  const [bloodPledge, setBloodPledge] = useState('By arterial steel and obsidian glass, I claim these shades.');
+  const [bloodPledge, setBloodPledge] = useState(
+    currentUser
+      ? `By arterial steel and blood oath of ${currentUser.name} [${currentUser.bloodType}], I claim these shades.`
+      : 'By arterial steel and obsidian glass, I claim these shades.'
+  );
   const [promoCode, setPromoCode] = useState(appliedPromo);
 
   const [loading, setLoading] = useState(false);

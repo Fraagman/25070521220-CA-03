@@ -13,6 +13,7 @@ const Home = ({
   onClearCart,
   appliedPromo,
   setAppliedPromo,
+  currentUser,
 }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -48,6 +49,7 @@ const Home = ({
         setAppliedPromo={setAppliedPromo}
         selectedProduct={selectedProduct}
         setSelectedProduct={setSelectedProduct}
+        currentUser={currentUser}
       />
       <Footer />
     </div>

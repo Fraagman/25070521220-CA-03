@@ -177,3 +177,31 @@ export interface HealthStatus {
   timestamp: string;
 }
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  bloodType: string;
+  role: string;
+  createdAt?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  token: string;
+  user: User;
+}
+
+export interface SignUpPayload {
+  name: string;
+  email: string;
+  password: string;
+  bloodType: string;
+}
+
+export interface SignInPayload {
+  email: string;
+  password: string;
+}
+

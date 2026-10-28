@@ -5,7 +5,8 @@ import Home from './home';
 import About from './about';
 import Services from './services';
 import Contact from './contact';
-import { checkHealth } from './services/api';
+import { AuthModal } from './components/AuthModal';
+import { checkHealth, getSavedUser, clearAuth } from './services/api';
 import './App.css';
 
 const App = () => {
@@ -17,6 +18,10 @@ const App = () => {
       return [];
     }
   });
+
+  const [currentUser, setCurrentUser] = useState(() => getSavedUser());
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('signin');
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState('');
@@ -35,6 +40,21 @@ const App = () => {
       .then((h) => setIsConnected(h.database === 'connected'))
       .catch(() => setIsConnected(false));
   }, []);
+
+  const handleOpenAuth = (mode = 'signin') => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
+  };
+
+  const handleLogout = () => {
+    clearAuth();
+    setCurrentUser(null);
+  };
+
+  const handleAuthSuccess = (user) => {
+    setCurrentUser(user);
+    setIsAuthOpen(false);
+  };
 
   const handleAddToCart = (product, quantity = 1) => {
     setCart((prev) => {
@@ -80,6 +100,9 @@ const App = () => {
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
         isConnected={isConnected}
+        currentUser={currentUser}
+        onOpenAuth={handleOpenAuth}
+        onLogout={handleLogout}
       />
 
       <Routes>
@@ -96,6 +119,7 @@ const App = () => {
               onClearCart={handleClearCart}
               appliedPromo={appliedPromo}
               setAppliedPromo={setAppliedPromo}
+              currentUser={currentUser}
             />
           }
         />
@@ -103,9 +127,15 @@ const App = () => {
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+        initialMode={authMode}
+      />
     </>
   );
 };
 
 export default App;
-
