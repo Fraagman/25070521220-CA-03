@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #070406;
+    color: #f3ede6;
+    font-family: 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.04em;
+  }
+}
+
+/* Custom Brutal Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090507;
+  border-left: 2px solid #27060b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff0033;
+  border: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b3001e;
+}
+
+/* Brutal Card Borders and Drip accents */
+.brutal-shadow {
+  box-shadow: 6px 6px 0px #ff0033;
+}
+
+.brutal-shadow-black {
+  box-shadow: 6px 6px 0px #000000;
+}
+
